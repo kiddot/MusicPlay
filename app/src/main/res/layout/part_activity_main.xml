@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_head"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_main_toolbar"
+        android:fitsSystemWindows="true"
+        android:clipToPadding="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetStart="0.0dp"
+        app:theme="@style/ToolbarStyle">
+
+
+        <RelativeLayout
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="?actionBarSize">
+
+            <ImageView
+                android:id="@+id/main_iv_discover"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_toStartOf="@+id/main_iv_music"
+                android:background="@drawable/actionbar_discover"
+                android:clickable="true"/>
+
+            <ImageView
+                android:id="@+id/main_iv_music"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_centerInParent="true"
+                android:background="@drawable/actionbar_music"
+                android:clickable="true"
+                />
+
+            <ImageView
+                android:id="@+id/main_iv_friends"
+                android:layout_width="55dp"
+                android:layout_height="match_parent"
+                android:layout_toEndOf="@+id/main_iv_music"
+                android:background="@drawable/actionbar_friends"
+                android:clickable="true"/>
+
+            <ImageView
+                android:id="@+id/main_iv_search"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:scaleType="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:background="@mipmap/actionbar_search"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/main_vp_show"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/activity_main_toolbar"
+        android:layout_above="@+id/main_fl_play"
+        >
+
+    </android.support.v4.view.ViewPager>
+
+    <FrameLayout
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottom_fl_control"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <!--<include-->
+            <!--android:id="@+id/main_bottom_bar"-->
+            <!--layout="@layout/bottom_control_music"/>-->
+    </FrameLayout>
+
+</RelativeLayout>

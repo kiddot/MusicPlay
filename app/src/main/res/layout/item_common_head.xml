@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+    <RelativeLayout
+        android:clickable="true"
+        android:id="@+id/item_head_common"
+        android:layout_gravity="bottom"
+        android:background="?android:attr/selectableItemBackground"
+        android:layout_width="match_parent"
+        android:layout_height="55dp">
+        <ImageView
+            android:id="@+id/item_head_image"
+            android:layout_width="22dp"
+            android:layout_height="22dp"
+            android:layout_alignParentLeft="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="17dp"
+            android:layout_marginRight="10dp"
+            android:src="@mipmap/item_head_play" />
+
+        <TextView
+            android:id="@+id/item_head_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_toEndOf="@+id/item_head_image"
+            android:gravity="center_vertical"
+            android:text="播放全部"
+            android:textColor="#FF000000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/item_head_count"
+            android:layout_width="70dp"
+            android:layout_height="match_parent"
+            android:layout_toStartOf="@+id/item_head_text"
+            android:gravity="center_vertical"
+            android:textSize="14sp" />
+
+        <ImageView
+            android:id="@+id/item_head_more"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center|clip_vertical"
+            android:clickable="true"
+            android:background="?android:attr/selectableItemBackground"
+            android:focusable="false"
+            android:gravity="end"
+            android:paddingStart="15dp"
+            android:paddingEnd="12dp"
+            android:src="@mipmap/item_head_more" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/activity_local_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        app:contentInsetStart="0.0dp"
+        app:theme="@style/ToolbarStyle"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/local_search"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:scaleType="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="55dp"
+                android:layout_toStartOf="@+id/local_more"
+                android:background="@mipmap/actionbar_search"
+                android:clickable="true"/>
+
+            <ImageView
+                android:id="@+id/local_more"
+                android:layout_width="22dp"
+                android:layout_height="22dp"
+                android:scaleType="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="8dp"
+                android:background="@mipmap/item_more"
+                android:clickable="true"/>
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.Toolbar>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/activity_local_bar">
+
+        <include layout="@layout/fragment_common" />
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_alignParentBottom="true"
+        android:id="@+id/bottom_fl_control"
+        android:layout_width="match_parent"
+        android:layout_height="50dp">
+
+        <!--<include-->
+        <!--android:id="@+id/main_bottom_bar"-->
+        <!--layout="@layout/bottom_control_music"/>-->
+    </FrameLayout>
+
+
+</RelativeLayout>
