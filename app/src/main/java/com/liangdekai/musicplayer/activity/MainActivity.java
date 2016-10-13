@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 
 import com.liangdekai.musicplayer.R;
@@ -181,5 +182,16 @@ public class MainActivity extends BottomActivity implements ViewPager.OnPageChan
                 mViewPager.setCurrentItem(2);
                 break;
         }
+    }
+
+    /**
+     * 重写back按键，相当于home键
+     */
+    @Override
+    public void onBackPressed() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN);
+        homeIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        homeIntent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(homeIntent);
     }
 }

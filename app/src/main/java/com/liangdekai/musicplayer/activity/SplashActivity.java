@@ -16,14 +16,15 @@ public class SplashActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        //setContentView(R.layout.activity_splash);
 
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                splash();
-            }
-        } , SPLASH_DELAY_MILLIS);
+//        new Handler().postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                splash();
+//            }
+//        } , SPLASH_DELAY_MILLIS);
+        splash();
     }
 
     private void splash(){

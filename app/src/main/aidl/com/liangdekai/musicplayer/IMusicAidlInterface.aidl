@@ -12,6 +12,7 @@ interface IMusicAidlInterface {
             double aDouble, String aString);
 
     void play();
+    void seekTo(int currentTime);
     void pause();
     int duration();
     int position();

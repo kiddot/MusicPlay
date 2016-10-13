@@ -11,10 +11,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.liangdekai.musicplayer.R;
+import com.liangdekai.musicplayer.activity.PlayActivity;
 import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.util.QueryMusic;
 
@@ -25,12 +27,13 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
     private TextView mSong ;
     private TextView mArtist ;
     private ProgressBar mProgress ;
+    private LinearLayout mRootView ;
     private Handler handler = new Handler(Looper.getMainLooper()){
         @Override
         public void handleMessage(Message msg) {
             if (msg.what == 1){
                 mProgress.setProgress(QueryMusic.position());
-                handler.sendEmptyMessageDelayed(1 , 1000);
+                handler.sendEmptyMessageDelayed(1 , 100);
             }
         }
     };
@@ -55,6 +58,7 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
      */
     private void init(View view){
         mProgress = (ProgressBar) view.findViewById(R.id.main_bottom_progress);
+        mRootView = (LinearLayout) view.findViewById(R.id.main_bottom_root);
         mSong = (TextView) view.findViewById(R.id.main_bottom_song);
         mArtist = (TextView) view.findViewById(R.id.main_bottom_artist);
         mPlay = (ImageView) view.findViewById(R.id.main_bottom_play);
@@ -65,13 +69,15 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
      * 初始化底部播放控制台的音乐信息
      */
     private void setMusicInfo(){
-        mSong.setText(QueryMusic.getMusicName());
-        mArtist.setText(QueryMusic.getArtistName());
-        if (QueryMusic.isPlaying()){
-            Log.d("test" , "正在播放音乐");
-            mPlay.setImageResource(R.mipmap.main_bottom_pause);
-            mProgress.setMax(QueryMusic.getDuration());
-            handler.sendEmptyMessageDelayed(1 , 100);
+        if (QueryMusic.getMusicName() != null){
+            mSong.setText(QueryMusic.getMusicName());
+            mArtist.setText(QueryMusic.getArtistName());
+            if (QueryMusic.isPlaying()){
+                Log.d("test" , "正在播放音乐");
+                mPlay.setImageResource(R.mipmap.main_bottom_pause);
+                mProgress.setMax(QueryMusic.getDuration());
+                handler.sendEmptyMessageDelayed(1 , 100);
+            }
         }
     }
 
@@ -80,6 +86,7 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
      */
     private void setListener(){
         mPlay.setOnClickListener(this);
+        mRootView.setOnClickListener(this);
     }
 
     @Override
@@ -92,6 +99,9 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
                     QueryMusic.start();
                 }
                 upDateIcon();
+                break;
+            case R.id.main_bottom_root :
+                PlayActivity.startActivity(getActivity());
                 break;
         }
     }

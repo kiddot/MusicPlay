@@ -59,6 +59,14 @@ public class QueryMusic {
         return false;
     }
 
+    public static void seekTo(int currentTime){
+        try {
+            mQuery.seekTo(currentTime);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void start(){
         try {
             mQuery.play();

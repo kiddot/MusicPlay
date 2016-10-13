@@ -9,9 +9,11 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.liangdekai.musicplayer.IMusicAidlInterface;
 import com.liangdekai.musicplayer.bean.MusicInfo;
+import com.liangdekai.musicplayer.util.MusicCache;
 
 import java.io.IOException;
 
@@ -35,7 +37,7 @@ public class PlayService extends Service{
     public int onStartCommand(Intent intent, int flags, int startId) {
         mMusicInfo = intent.getParcelableExtra("musicInfo");
         if (mMusicInfo != null){
-            saveCurrentMusic();
+            MusicCache.addCacheMusic(0 , mMusicInfo);
             if (mMusicInfo.getData() != null){
                 playMusic(mMusicInfo.getData());
             }
@@ -62,34 +64,51 @@ public class PlayService extends Service{
         mMediaPlayer.start();
     }
 
-    private void saveCurrentMusic(){
-        SharedPreferences.Editor editor = getSharedPreferences(CURRENT_MUSIC , Context.MODE_APPEND).edit();
-        editor.putString("musicName" , mMusicInfo.getMusicName());
-        editor.putString("artistName" , mMusicInfo.getArtist());
-        editor.putInt("duration" , mMusicInfo.getDuration());
-        editor.apply();
+    private void seekTo(int currentTime){
+        mMediaPlayer.seekTo(currentTime);
     }
 
-    private void getCurrentMusic(){
-        SharedPreferences preferences = getSharedPreferences(CURRENT_MUSIC , Context.MODE_APPEND) ;
-        mMusicName = preferences.getString("musicName" , "");
-        mArtistName = preferences.getString("artistName" , "");
-        mDuration = preferences.getInt("duration" , 0);
-    }
+//    private void saveCurrentMusic(){
+//        SharedPreferences.Editor editor = getSharedPreferences(CURRENT_MUSIC , Context.MODE_APPEND).edit();
+//        editor.putString("musicName" , mMusicInfo.getMusicName());
+//        editor.putString("artistName" , mMusicInfo.getArtist());
+//        editor.putInt("duration" , mMusicInfo.getDuration());
+//        editor.apply();
+//    }
+//
+//    private void getCurrentMusic(){
+//        SharedPreferences preferences = getSharedPreferences(CURRENT_MUSIC , Context.MODE_APPEND) ;
+//        mMusicName = preferences.getString("musicName" , "");
+//        mArtistName = preferences.getString("artistName" , "");
+//        mDuration = preferences.getInt("duration" , 0);
+//    }
 
     private String getMusicName(){
-        getCurrentMusic();
-        return mMusicName;
+        if (MusicCache.getCacheMusic(0) == null){
+            return null;
+        }else{
+            return MusicCache.getCacheMusic(0).getMusicName();
+        }
     }
 
     private String getArtistName(){
-        getCurrentMusic();
-        return mArtistName;
+//        if (mMusicInfo != null){
+//            return mMusicInfo.getArtist();
+//        }
+        //return MusicCache.getCacheMusic(0).getArtist();
+        if (MusicCache.getCacheMusic(0) == null){
+            return null;
+        }else {
+            return MusicCache.getCacheMusic(0).getArtist();
+        }
     }
 
     private int getDuration(){
-        getCurrentMusic();
-        return mDuration;
+        if (MusicCache.getCacheMusic(0) == null){
+            return 0;
+        }else{
+            return MusicCache.getCacheMusic(0).getDuration();
+        }
     }
 
     private void playMusic(String url){
@@ -117,6 +136,9 @@ public class PlayService extends Service{
         return mMediaPlayer.getCurrentPosition();
     }
 
+
+
+
     private static final class MusicStub extends IMusicAidlInterface.Stub{
         private PlayService mService;
 
@@ -132,6 +154,11 @@ public class PlayService extends Service{
         @Override
         public void play() throws RemoteException {
             mService.startMusic();
+        }
+
+        @Override
+        public void seekTo(int currentTime) throws RemoteException {
+            mService.seekTo(currentTime);
         }
 
         @Override

@@ -106,7 +106,6 @@ public class MainFragmentAdapter extends RecyclerView.Adapter<MainFragmentAdapte
             animator.setInterpolator(new LinearInterpolator());
             switch (getItemViewType()){
                 case 0 :
-                    Log.d("test", "onClick: expand");
                     if (mCollectExpanded){
                         animator.start();
                         mCollectExpanded = false ;
