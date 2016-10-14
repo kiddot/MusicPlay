@@ -16,6 +16,8 @@ import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.util.CalculateTime;
 import com.liangdekai.musicplayer.util.QueryMusic;
 
+import de.greenrobot.event.EventBus;
+
 /**
  * Created by asus on 2016/10/13.
  */
@@ -71,6 +73,8 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
         mTvStartTime.setText(CalculateTime.calculateFormatTime(QueryMusic.position()));
         mSeekBar.setMax(QueryMusic.getDuration());
         mSeekBar.setProgress(QueryMusic.position());
+        mToolBar.setTitle(QueryMusic.getMusicName());
+        mToolBar.setSubtitle(QueryMusic.getArtistName());
         if (QueryMusic.isPlaying()){
             mNeedleAnimator.start();
             mIvPlayOrPause.setImageResource(R.mipmap.play_bottom_pause);
@@ -92,6 +96,8 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
     private void setOnListener(){
         mIvPlayOrPause.setOnClickListener(this);
         mSeekBar.setOnSeekBarChangeListener(this);
+        mIvNext.setOnClickListener(this);
+        mIvPrevious.setOnClickListener(this);
     }
 
     private void initAnimator(){
@@ -137,8 +143,18 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
                    mNeedleAnimator.start();
                    mSeekBar.postDelayed(mUpdateSeekBar , 1000);
                }
+               EventBus.getDefault().post("null");
                break;
-
+           case R.id.play_iv_next :
+               QueryMusic.next();
+               initInfo();
+               EventBus.getDefault().post("null");
+               break;
+           case R.id.play_iv_pre :
+               QueryMusic.pre();
+               initInfo();
+               EventBus.getDefault().post("null");
+               break;
        }
     }
 

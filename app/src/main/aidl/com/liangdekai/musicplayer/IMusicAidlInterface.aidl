@@ -14,6 +14,8 @@ interface IMusicAidlInterface {
     void play();
     void seekTo(int currentTime);
     void pause();
+    void next();
+    void pre();
     int duration();
     int position();
     boolean isPlaying();

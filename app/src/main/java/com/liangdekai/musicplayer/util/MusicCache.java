@@ -1,5 +1,6 @@
 package com.liangdekai.musicplayer.util;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.liangdekai.musicplayer.bean.MusicInfo;
@@ -11,13 +12,29 @@ import java.util.List;
  */
 public class MusicCache {
     public static SparseArray<MusicInfo> mCacheMusic = new SparseArray<>();
+    public static int mCurrentPosition ;
 
+    public static void rememberPosition(int position){
+        mCurrentPosition = position ;
+    }
+
+    public static int getPosition(){
+        return mCurrentPosition;
+    }
 
     public static void addCacheMusic(int position , MusicInfo musicInfo){
         mCacheMusic.put(position , musicInfo);
     }
 
+    public static void addCacheMusic(List<MusicInfo> list){
+        for (int i = 0 ; i < list.size() ; i++){
+            mCacheMusic.put(i , list.get(i));
+        }
+    }
+
     public static MusicInfo getCacheMusic(int position){
         return mCacheMusic.get(position);
     }
+
+
 }

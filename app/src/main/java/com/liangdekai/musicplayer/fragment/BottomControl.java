@@ -1,6 +1,5 @@
 package com.liangdekai.musicplayer.fragment;
 
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -19,6 +18,10 @@ import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.activity.PlayActivity;
 import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.util.QueryMusic;
+
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
+import de.greenrobot.event.ThreadMode;
 
 public class BottomControl extends BaseFragment implements View.OnClickListener{
     private ImageView mPlay ;
@@ -66,7 +69,7 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
     }
 
     /**
-     * 初始化底部播放控制台的音乐信息
+     * 设置底部播放控制台的音乐信息
      */
     private void setMusicInfo(){
         if (QueryMusic.getMusicName() != null){
@@ -87,6 +90,7 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
     private void setListener(){
         mPlay.setOnClickListener(this);
         mRootView.setOnClickListener(this);
+        mNext.setOnClickListener(this);
     }
 
     @Override
@@ -103,12 +107,19 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
             case R.id.main_bottom_root :
                 PlayActivity.startActivity(getActivity());
                 break;
+            case R.id.main_bottom_next :
+                QueryMusic.next();
+                setMusicInfo();
+                break;
         }
     }
 
     @Override
     public void onDestroy() {
         super.onDestroyView();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
     }
 
     @Override
@@ -126,5 +137,10 @@ public class BottomControl extends BaseFragment implements View.OnClickListener{
         }else {
             mPlay.setImageResource(R.mipmap.main_bottom_play);
         }
+    }
+
+    @Subscribe
+    public void onEvent(String str){
+        setMusicInfo();
     }
 }

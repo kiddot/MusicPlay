@@ -24,6 +24,8 @@ import de.greenrobot.event.Subscribe;
 import de.greenrobot.event.ThreadMode;
 
 public class SingleSongFragment extends BaseLazyFragment {
+    private static final String CURRENT_POSITION = "current";
+    private static final String MUSIC_INFO = "musicInfo";
     private SingleSongAdapter mAdapter;
     private RecyclerView mRecyclerView ;
     private ViewGroup mLayout ;
@@ -65,22 +67,22 @@ public class SingleSongFragment extends BaseLazyFragment {
     private void onClick(){
         mAdapter.onClick(new SingleSongAdapter.OnClickListener() {
             @Override
-            public void onClick(SingleSongAdapter.SongHolder itemHolder, final MusicInfo musicInfo) {
+            public void onClick(SingleSongAdapter.SongHolder itemHolder, final MusicInfo musicInfo , final int position) {
                 itemHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d("test" , "点击歌曲");
                         Bundle bundle = new Bundle();
-                        bundle.putParcelable("musicInfo" , musicInfo);
+                        bundle.putParcelable(MUSIC_INFO , musicInfo);
 
                         Intent intent = new Intent(getActivity() , PlayService.class);
                         //intent.putExtra(MUSIC_URL , musicInfo.getData());
+                        intent.putExtra(CURRENT_POSITION , position);
                         intent.putExtras(bundle);
                         getActivity().startService(intent);
-                        //EventBus.getDefault().post(musicInfo);
-                        Intent sendBroadcast = new Intent(MusicAction.MUSIC_PLAY);
-                        sendBroadcast.putExtras(bundle);
-                        getActivity().sendBroadcast(sendBroadcast);
+                        EventBus.getDefault().post(musicInfo);
+//                        Intent sendBroadcast = new Intent(MusicAction.MUSIC_PLAY);
+//                        sendBroadcast.putExtras(bundle);
+//                        getActivity().sendBroadcast(sendBroadcast);
                     }
                 });
             }

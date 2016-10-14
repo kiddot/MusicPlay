@@ -18,24 +18,24 @@ import de.greenrobot.event.ThreadMode;
 
 public class BaseFragment extends Fragment {
 
-    private BroadcastReceiver mMusicInfoListener = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
-            MusicInfo musicInfo = intent.getParcelableExtra("musicInfo");
-            if (action.equals(MusicAction.MUSIC_PLAY)){
-                upDateMusicInfo(musicInfo);
-            }
-        }
-    };
+//    private BroadcastReceiver mMusicInfoListener = new BroadcastReceiver() {
+//        @Override
+//        public void onReceive(Context context, Intent intent) {
+//            String action = intent.getAction();
+//            MusicInfo musicInfo = intent.getParcelableExtra("musicInfo");
+//            if (action.equals(MusicAction.MUSIC_PLAY)){
+//                upDateMusicInfo(musicInfo);
+//            }
+//        }
+//    };
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //EventBus.getDefault().register(getActivity());
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(MusicAction.MUSIC_PLAY);
-        getActivity().registerReceiver(mMusicInfoListener , intentFilter);
+        EventBus.getDefault().register(this);
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction(MusicAction.MUSIC_PLAY);
+//        getActivity().registerReceiver(mMusicInfoListener , intentFilter);
     }
 
     public void upDateMusicInfo(MusicInfo musicInfo){
@@ -47,9 +47,16 @@ public class BaseFragment extends Fragment {
         super.onPause();
     }
 
-//    @Subscribe(threadMode = ThreadMode.MainThread)
-//    public void TestEventBus(MusicInfo musicInfo){
-//        Log.d("test" , musicInfo.getMusicName()+"baseFragment");
-//        upDateMusicInfo(musicInfo);
-//    }
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (EventBus.getDefault().isRegistered(this)){
+            EventBus.getDefault().unregister(this);
+        }
+    }
+    @Subscribe
+    public void onEvent(MusicInfo musicInfo){
+        upDateMusicInfo(musicInfo);
+    }
+
 }

@@ -9,14 +9,18 @@ import android.widget.TextView;
 
 import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.bean.MusicInfo;
+import com.liangdekai.musicplayer.util.MusicCache;
 
 import java.util.List;
 
 public class SingleSongAdapter extends RecyclerView.Adapter<SingleSongAdapter.SongHolder> {
     private List<MusicInfo> mMusicList ;
     private OnClickListener mListener ;
+
+
     public SingleSongAdapter(List<MusicInfo> list){
         mMusicList = list ;
+        //MusicCache.addCacheMusic(mMusicList);
     }
 
     @Override
@@ -52,7 +56,7 @@ public class SingleSongAdapter extends RecyclerView.Adapter<SingleSongAdapter.So
     }
 
     public interface OnClickListener {
-        void onClick(SongHolder itemHolder , MusicInfo musicInfo);
+        void onClick(SongHolder itemHolder , MusicInfo musicInfo , int position);
     }
 
     @Override
@@ -62,7 +66,7 @@ public class SingleSongAdapter extends RecyclerView.Adapter<SingleSongAdapter.So
         }else {
             holder.name.setText(mMusicList.get(position-1).getMusicName());
             holder.artist.setText(mMusicList.get(position-1).getArtist());
-            mListener.onClick(holder , mMusicList.get(position-1));
+            mListener.onClick(holder , mMusicList.get(position-1) , position-1);
         }
     }
 

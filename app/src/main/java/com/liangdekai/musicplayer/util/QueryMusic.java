@@ -83,6 +83,22 @@ public class QueryMusic {
         }
     }
 
+    public static void next(){
+        try {
+            mQuery.next();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void pre(){
+        try {
+            mQuery.pre();
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static String getArtistName(){
         try {
             if (mQuery != null){

@@ -1,9 +1,7 @@
 package com.liangdekai.musicplayer.service;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.IBinder;
@@ -14,11 +12,13 @@ import android.util.Log;
 import com.liangdekai.musicplayer.IMusicAidlInterface;
 import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.util.MusicCache;
+import com.liangdekai.musicplayer.util.MusicHelper;
 
 import java.io.IOException;
 
 public class PlayService extends Service{
-    private static final String CURRENT_MUSIC = "currentMusic";
+    private static final String CURRENT_POSITION = "current";
+    private static final String MUSIC_INFO = "musicInfo";
     private MediaPlayer mMediaPlayer ;
     private Binder mBinder ;
     private MusicInfo mMusicInfo;
@@ -35,9 +35,16 @@ public class PlayService extends Service{
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        mMusicInfo = intent.getParcelableExtra("musicInfo");
+        mMusicInfo = intent.getParcelableExtra(MUSIC_INFO);
+        int currentPosition = intent.getIntExtra(CURRENT_POSITION, -1);
+        if (currentPosition == -1){
+            currentPosition = MusicCache.getPosition();
+        }else{
+            MusicCache.rememberPosition(currentPosition);
+        }
+        Log.d("test" , currentPosition +"当前播放位置");
         if (mMusicInfo != null){
-            MusicCache.addCacheMusic(0 , mMusicInfo);
+            MusicCache.addCacheMusic(MusicHelper.queryMusic(this));
             if (mMusicInfo.getData() != null){
                 playMusic(mMusicInfo.getData());
             }
@@ -60,6 +67,16 @@ public class PlayService extends Service{
         mMediaPlayer.pause();
     }
 
+    private void next(){
+        MusicCache.rememberPosition(MusicCache.getPosition()+1);
+        playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+    }
+
+    private void pre(){
+        MusicCache.rememberPosition(MusicCache.getPosition()-1);
+        playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+    }
+
     private void startMusic(){
         mMediaPlayer.start();
     }
@@ -68,47 +85,25 @@ public class PlayService extends Service{
         mMediaPlayer.seekTo(currentTime);
     }
 
-//    private void saveCurrentMusic(){
-//        SharedPreferences.Editor editor = getSharedPreferences(CURRENT_MUSIC , Context.MODE_APPEND).edit();
-//        editor.putString("musicName" , mMusicInfo.getMusicName());
-//        editor.putString("artistName" , mMusicInfo.getArtist());
-//        editor.putInt("duration" , mMusicInfo.getDuration());
-//        editor.apply();
-//    }
-//
-//    private void getCurrentMusic(){
-//        SharedPreferences preferences = getSharedPreferences(CURRENT_MUSIC , Context.MODE_APPEND) ;
-//        mMusicName = preferences.getString("musicName" , "");
-//        mArtistName = preferences.getString("artistName" , "");
-//        mDuration = preferences.getInt("duration" , 0);
-//    }
-
     private String getMusicName(){
-        if (MusicCache.getCacheMusic(0) == null){
+        if (MusicCache.getCacheMusic(MusicCache.getPosition()) == null){
             return null;
-        }else{
-            return MusicCache.getCacheMusic(0).getMusicName();
         }
+        return MusicCache.getCacheMusic(MusicCache.getPosition()).getMusicName();
     }
 
     private String getArtistName(){
-//        if (mMusicInfo != null){
-//            return mMusicInfo.getArtist();
-//        }
-        //return MusicCache.getCacheMusic(0).getArtist();
-        if (MusicCache.getCacheMusic(0) == null){
+        if (MusicCache.getCacheMusic(MusicCache.getPosition()) == null){
             return null;
-        }else {
-            return MusicCache.getCacheMusic(0).getArtist();
         }
+        return MusicCache.getCacheMusic(MusicCache.getPosition()).getArtist();
     }
 
     private int getDuration(){
-        if (MusicCache.getCacheMusic(0) == null){
+        if (MusicCache.getCacheMusic(MusicCache.getPosition()) == null){
             return 0;
-        }else{
-            return MusicCache.getCacheMusic(0).getDuration();
         }
+        return MusicCache.getCacheMusic(MusicCache.getPosition()).getDuration();
     }
 
     private void playMusic(String url){
@@ -164,6 +159,16 @@ public class PlayService extends Service{
         @Override
         public void pause() throws RemoteException {
             mService.pauseMusic();
+        }
+
+        @Override
+        public void next() throws RemoteException {
+            mService.next();
+        }
+
+        @Override
+        public void pre() throws RemoteException {
+            mService.pre();
         }
 
         @Override

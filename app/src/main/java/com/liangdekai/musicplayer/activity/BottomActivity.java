@@ -11,6 +11,7 @@ import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.fragment.BottomControl;
 import com.liangdekai.musicplayer.util.QueryMusic;
 
+import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import de.greenrobot.event.ThreadMode;
 
@@ -41,5 +42,4 @@ public class BottomActivity extends AppCompatActivity {
                 fragmentTransaction.hide(mBottomFragment).commitAllowingStateLoss();
         }
     }
-
 }
