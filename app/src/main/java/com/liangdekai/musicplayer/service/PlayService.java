@@ -36,15 +36,15 @@ public class PlayService extends Service{
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         mMusicInfo = intent.getParcelableExtra(MUSIC_INFO);
-        int currentPosition = intent.getIntExtra(CURRENT_POSITION, -1);
-        if (currentPosition == -1){
-            currentPosition = MusicCache.getPosition();
-        }else{
-            MusicCache.rememberPosition(currentPosition);
-        }
-        Log.d("test" , currentPosition +"当前播放位置");
+//        int currentPosition = intent.getIntExtra(CURRENT_POSITION, -1);
+//        if (currentPosition == -1){
+//            currentPosition = MusicCache.getPosition();
+//        }else{
+//            MusicCache.rememberPosition(currentPosition);
+//        }
+//        Log.d("test" , currentPosition +"当前播放位置" +"，实际位置"+MusicCache.getPosition());
         if (mMusicInfo != null){
-            MusicCache.addCacheMusic(MusicHelper.queryMusic(this));
+            //MusicCache.addCacheMusic(MusicHelper.queryMusic(this));
             if (mMusicInfo.getData() != null){
                 playMusic(mMusicInfo.getData());
             }
@@ -67,14 +67,26 @@ public class PlayService extends Service{
         mMediaPlayer.pause();
     }
 
-    private void next(){
-        MusicCache.rememberPosition(MusicCache.getPosition()+1);
-        playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+    private void next(MusicInfo musicInfo){
+//        if (MusicCache.getPosition() == MusicCache.getMusicSize()-1){
+//            MusicCache.rememberPosition(0);
+//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//        }else{
+//            MusicCache.rememberPosition(MusicCache.getPosition()+1);
+//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//        }
+        playMusic(musicInfo.getData());
     }
 
-    private void pre(){
-        MusicCache.rememberPosition(MusicCache.getPosition()-1);
-        playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+    private void pre(MusicInfo musicInfo){
+//        if (MusicCache.getPosition() == 0){
+//            MusicCache.rememberPosition(MusicCache.getMusicSize()-1);
+//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//        }else{
+//            MusicCache.rememberPosition(MusicCache.getPosition()-1);
+//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//        }
+        playMusic(musicInfo.getData());
     }
 
     private void startMusic(){
@@ -85,25 +97,25 @@ public class PlayService extends Service{
         mMediaPlayer.seekTo(currentTime);
     }
 
-    private String getMusicName(){
-        if (MusicCache.getCacheMusic(MusicCache.getPosition()) == null){
+    private String getMusicName(MusicInfo musicInfo){
+        if (musicInfo == null){
             return null;
         }
-        return MusicCache.getCacheMusic(MusicCache.getPosition()).getMusicName();
+        return musicInfo.getMusicName();
     }
 
-    private String getArtistName(){
-        if (MusicCache.getCacheMusic(MusicCache.getPosition()) == null){
+    private String getArtistName(MusicInfo musicInfo){
+        if (musicInfo == null){
             return null;
         }
-        return MusicCache.getCacheMusic(MusicCache.getPosition()).getArtist();
+        return musicInfo.getArtist();
     }
 
-    private int getDuration(){
-        if (MusicCache.getCacheMusic(MusicCache.getPosition()) == null){
+    private int getDuration(MusicInfo musicInfo){
+        if (musicInfo == null){
             return 0;
         }
-        return MusicCache.getCacheMusic(MusicCache.getPosition()).getDuration();
+        return musicInfo.getDuration();
     }
 
     private void playMusic(String url){
@@ -152,6 +164,11 @@ public class PlayService extends Service{
         }
 
         @Override
+        public void playMusic(String url) throws RemoteException {
+            mService.playMusic(url);
+        }
+
+        @Override
         public void seekTo(int currentTime) throws RemoteException {
             mService.seekTo(currentTime);
         }
@@ -162,18 +179,18 @@ public class PlayService extends Service{
         }
 
         @Override
-        public void next() throws RemoteException {
-            mService.next();
+        public void next(MusicInfo musicInfo) throws RemoteException {
+            mService.next(musicInfo);
         }
 
         @Override
-        public void pre() throws RemoteException {
-            mService.pre();
+        public void pre(MusicInfo musicInfo) throws RemoteException {
+            mService.pre(musicInfo);
         }
 
         @Override
-        public int duration() throws RemoteException {
-            return mService.getDuration();
+        public int duration(MusicInfo musicInfo) throws RemoteException {
+            return mService.getDuration(musicInfo);
         }
 
         @Override
@@ -187,13 +204,13 @@ public class PlayService extends Service{
         }
 
         @Override
-        public String getMusicName() throws RemoteException {
-            return mService.getMusicName();
+        public String getMusicName(MusicInfo musicInfo) throws RemoteException {
+            return mService.getMusicName(musicInfo);
         }
 
         @Override
-        public String getArtistName() throws RemoteException {
-            return mService.getArtistName();
+        public String getArtistName(MusicInfo musicInfo) throws RemoteException {
+            return mService.getArtistName(musicInfo);
         }
 
         @Override

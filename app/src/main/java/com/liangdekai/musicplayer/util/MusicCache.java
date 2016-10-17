@@ -5,6 +5,7 @@ import android.util.SparseArray;
 
 import com.liangdekai.musicplayer.bean.MusicInfo;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -26,6 +27,10 @@ public class MusicCache {
         mCacheMusic.put(position , musicInfo);
     }
 
+    public static int getMusicSize(){
+        return mCacheMusic.size();
+    }
+
     public static void addCacheMusic(List<MusicInfo> list){
         for (int i = 0 ; i < list.size() ; i++){
             mCacheMusic.put(i , list.get(i));
@@ -36,5 +41,11 @@ public class MusicCache {
         return mCacheMusic.get(position);
     }
 
-
+    public static List<MusicInfo> getAllMusic(){
+        List<MusicInfo> list  = new ArrayList<>();
+        for (int i = 0 ; i < mCacheMusic.size() ; i++){
+            list.add(mCacheMusic.get(i));
+        }
+        return list;
+    }
 }

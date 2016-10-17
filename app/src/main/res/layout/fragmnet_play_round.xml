@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.percent.PercentFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:layout_widthPercent="75%"
+        android:layout_margin="1dp"
+        android:src="@mipmap/fragment_play_round_outer"
+        />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/fragment_play_album"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        app:layout_widthPercent="50%"
+        app:civ_border_width="2dp"
+        app:civ_border_color="#fff"
+        />
+
+
+</android.support.percent.PercentFrameLayout>

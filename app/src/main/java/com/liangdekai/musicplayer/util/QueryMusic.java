@@ -9,6 +9,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 import com.liangdekai.musicplayer.IMusicAidlInterface;
+import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.service.PlayService;
 
 public class QueryMusic {
@@ -84,25 +85,43 @@ public class QueryMusic {
     }
 
     public static void next(){
+        if (MusicCache.getPosition() == MusicCache.getMusicSize()-1){
+            MusicCache.rememberPosition(0);
+        }else{
+            MusicCache.rememberPosition(MusicCache.getPosition()+1);
+        }
         try {
-            mQuery.next();
+            mQuery.next(MusicCache.getCacheMusic(MusicCache.getPosition()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
     public static void pre(){
+        if (MusicCache.getPosition() == 0){
+            MusicCache.rememberPosition(MusicCache.getMusicSize()-1);
+        }else{
+            MusicCache.rememberPosition(MusicCache.getPosition()-1);
+        }
         try {
-            mQuery.pre();
+            mQuery.pre(MusicCache.getCacheMusic(MusicCache.getPosition()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
-    public static String getArtistName(){
+    public static void playMusic(String url){
+        try {
+            mQuery.playMusic(url);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static String getArtistName(MusicInfo musicInfo){
         try {
             if (mQuery != null){
-                return mQuery.getArtistName();
+                return mQuery.getArtistName(musicInfo);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -110,10 +129,10 @@ public class QueryMusic {
         return null;
     }
 
-    public static int getDuration(){
+    public static int getDuration(MusicInfo musicInfo){
         try {
             if (mQuery != null){
-                return mQuery.duration();
+                return mQuery.duration(musicInfo);
             }
         } catch (RemoteException e) {
             e.printStackTrace();
@@ -121,10 +140,10 @@ public class QueryMusic {
         return 0;
     }
 
-    public static String getMusicName(){
+    public static String getMusicName(MusicInfo musicInfo){
         try {
             if (mQuery != null){
-                return mQuery.getMusicName();
+                return mQuery.getMusicName(musicInfo);
             }
         } catch (RemoteException e) {
             e.printStackTrace();

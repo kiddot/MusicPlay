@@ -17,6 +17,7 @@ import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.service.PlayService;
 import com.liangdekai.musicplayer.util.DividerItemDecoration;
 import com.liangdekai.musicplayer.util.MusicAction;
+import com.liangdekai.musicplayer.util.MusicCache;
 import com.liangdekai.musicplayer.util.MusicHelper;
 
 import de.greenrobot.event.EventBus;
@@ -78,6 +79,8 @@ public class SingleSongFragment extends BaseLazyFragment {
                         //intent.putExtra(MUSIC_URL , musicInfo.getData());
                         intent.putExtra(CURRENT_POSITION , position);
                         intent.putExtras(bundle);
+                        MusicCache.rememberPosition(position);
+                        MusicCache.addCacheMusic(MusicHelper.queryMusic(getActivity()));
                         getActivity().startService(intent);
                         EventBus.getDefault().post(musicInfo);
 //                        Intent sendBroadcast = new Intent(MusicAction.MUSIC_PLAY);

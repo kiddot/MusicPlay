@@ -65,7 +65,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/activity_main_toolbar"
-        android:layout_above="@+id/main_fl_play"
+        android:layout_above="@+id/bottom_fl_control"
         >
 
     </android.support.v4.view.ViewPager>
