@@ -12,7 +12,7 @@ import com.liangdekai.musicplayer.IMusicAidlInterface;
 import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.service.PlayService;
 
-public class QueryMusic {
+public class OperateMusic {
     public static IMusicAidlInterface mQuery ;
     public static BinderConnection mConnection;
 
@@ -85,26 +85,26 @@ public class QueryMusic {
     }
 
     public static void next(){
-        if (MusicCache.getPosition() == MusicCache.getMusicSize()-1){
-            MusicCache.rememberPosition(0);
+        if (PlayListCache.getPosition() == PlayListCache.getMusicSize()-1){
+            PlayListCache.rememberPosition(0);
         }else{
-            MusicCache.rememberPosition(MusicCache.getPosition()+1);
+            PlayListCache.rememberPosition(PlayListCache.getPosition()+1);
         }
         try {
-            mQuery.next(MusicCache.getCacheMusic(MusicCache.getPosition()));
+            mQuery.next(PlayListCache.getCacheMusic(PlayListCache.getPosition()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }
     }
 
     public static void pre(){
-        if (MusicCache.getPosition() == 0){
-            MusicCache.rememberPosition(MusicCache.getMusicSize()-1);
+        if (PlayListCache.getPosition() == 0){
+            PlayListCache.rememberPosition(PlayListCache.getMusicSize()-1);
         }else{
-            MusicCache.rememberPosition(MusicCache.getPosition()-1);
+            PlayListCache.rememberPosition(PlayListCache.getPosition()-1);
         }
         try {
-            mQuery.pre(MusicCache.getCacheMusic(MusicCache.getPosition()));
+            mQuery.pre(PlayListCache.getCacheMusic(PlayListCache.getPosition()));
         } catch (RemoteException e) {
             e.printStackTrace();
         }

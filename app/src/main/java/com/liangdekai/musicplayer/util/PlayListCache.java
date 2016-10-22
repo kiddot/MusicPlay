@@ -11,7 +11,7 @@ import java.util.List;
 /**
  * Created by asus on 2016/10/13.
  */
-public class MusicCache {
+public class PlayListCache {
     public static SparseArray<MusicInfo> mCacheMusic = new SparseArray<>();
     public static int mCurrentPosition ;
 
