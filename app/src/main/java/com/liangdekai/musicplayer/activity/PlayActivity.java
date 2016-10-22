@@ -3,13 +3,8 @@ package com.liangdekai.musicplayer.activity;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.Toolbar;
@@ -18,18 +13,24 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
+import com.android.volley.toolbox.Volley;
 import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.bean.MusicInfo;
-import com.liangdekai.musicplayer.fragment.AlbumRoundFragment;
+import com.liangdekai.musicplayer.net.MusicApi;
+import com.liangdekai.musicplayer.net.VolleyHelper;
+import com.liangdekai.musicplayer.net.util.ParseResponse;
+import com.liangdekai.musicplayer.util.OperateMusic;
 import com.liangdekai.musicplayer.util.CalculateTime;
-import com.liangdekai.musicplayer.util.MusicCache;
+import com.liangdekai.musicplayer.util.PlayListCache;
 import com.liangdekai.musicplayer.util.MusicHelper;
-import com.liangdekai.musicplayer.util.QueryMusic;
+import com.liangdekai.musicplayer.view.LrcView;
 
 import java.util.List;
 
@@ -38,7 +39,7 @@ import de.greenrobot.event.EventBus;
 /**
  * Created by asus on 2016/10/13.
  */
-public class PlayActivity extends BottomActivity implements View.OnClickListener , SeekBar.OnSeekBarChangeListener,ViewPager.OnPageChangeListener{
+public class PlayActivity extends BottomActivity implements View.OnClickListener , SeekBar.OnSeekBarChangeListener,ViewPager.OnPageChangeListener {
     private static final int ANIMATOR_SPEED = 500 ;
     private static final int ANIMATOR_ROTATION = -30 ;
     private static final int ANIMATOR_REPEAT_COUNT = 0 ;
@@ -49,8 +50,12 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
     private ImageView mIvNeedle ;
     private TextView mTvStartTime ;
     private TextView mTvEndTime ;
+    private LrcView mLvLrc ;
     private SeekBar mSeekBar ;
     private ViewPager mViewPager ;
+    private FrameLayout mAlbumLayout;
+    private RelativeLayout mLrcLayout ;
+    private LinearLayout mBottomBar ;
     private List<MusicInfo> mMusicList ;
     private ObjectAnimator mNeedleAnimator ;
     private ObjectAnimator mAlbumAnimator ;
@@ -63,8 +68,7 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_play);
-        Log.d("test" ,MusicCache.getPosition()+"设置当前页面为" );
+        setContentView(R.layout.activity_play);//android:layout_marginTop="?attr/actionBarSize"
         setToolBar();
         initView();
         setOnListener();
@@ -88,16 +92,20 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
         mTvEndTime = (TextView) findViewById(R.id.play_tv_end);
         mTvStartTime = (TextView) findViewById(R.id.play_tv_start);
         mViewPager = (ViewPager) findViewById(R.id.play_vp_slide);
+        mAlbumLayout = (FrameLayout) findViewById(R.id.play_fl_album);
+        mLrcLayout = (RelativeLayout) findViewById(R.id.play_rl_lrc);
+        mBottomBar = (LinearLayout) findViewById(R.id.play_ll_bottom_tool);
+        mLvLrc = (LrcView) findViewById(R.id.play_lv_lrc);
     }
 
     private void initInfo(){
-        mTvEndTime.setText(CalculateTime.calculateFormatTime(QueryMusic.getDuration(MusicCache.getCacheMusic(MusicCache.getPosition()))));
-        mTvStartTime.setText(CalculateTime.calculateFormatTime(QueryMusic.position()));
-        mSeekBar.setMax(QueryMusic.getDuration(MusicCache.getCacheMusic(MusicCache.getPosition())));
-        mSeekBar.setProgress(QueryMusic.position());
-        mToolBar.setTitle(QueryMusic.getMusicName(MusicCache.getCacheMusic(MusicCache.getPosition())));
-        mToolBar.setSubtitle(QueryMusic.getArtistName(MusicCache.getCacheMusic(MusicCache.getPosition())));
-        if (QueryMusic.isPlaying()){
+        mTvEndTime.setText(CalculateTime.calculateFormatTime(OperateMusic.getDuration(PlayListCache.getCacheMusic(PlayListCache.getPosition()))));
+        mTvStartTime.setText(CalculateTime.calculateFormatTime(OperateMusic.position()));
+        mSeekBar.setMax(OperateMusic.getDuration(PlayListCache.getCacheMusic(PlayListCache.getPosition())));
+        mSeekBar.setProgress(OperateMusic.position());
+        mToolBar.setTitle(OperateMusic.getMusicName(PlayListCache.getCacheMusic(PlayListCache.getPosition())));
+        mToolBar.setSubtitle(OperateMusic.getArtistName(PlayListCache.getCacheMusic(PlayListCache.getPosition())));
+        if (OperateMusic.isPlaying()){
             mNeedleAnimator.start();
             mIvPlayOrPause.setImageResource(R.mipmap.play_bottom_pause);
             mSeekBar.postDelayed(mUpdateSeekBar, 1000);
@@ -108,9 +116,12 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
     private Runnable mUpdateSeekBar = new Runnable() {
         @Override
         public void run() {
-            mTvStartTime.setText(CalculateTime.calculateFormatTime(QueryMusic.position()));
-            mSeekBar.setProgress(QueryMusic.position());
-            if (QueryMusic.isPlaying()){
+            mTvStartTime.setText(CalculateTime.calculateFormatTime(OperateMusic.position()));
+            mSeekBar.setProgress(OperateMusic.position());
+            if (mLvLrc != null){
+                mLvLrc.scrollToCurrentTimeMillis(OperateMusic.position());
+            }
+            if (OperateMusic.isPlaying()){
                 mSeekBar.postDelayed(mUpdateSeekBar, 1000);
             }
         }
@@ -122,6 +133,7 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
         mIvNext.setOnClickListener(this);
         mIvPrevious.setOnClickListener(this);
         mViewPager.addOnPageChangeListener(this);
+        mLrcLayout.setOnClickListener(this);
     }
 
     private void initAnimator(){
@@ -140,8 +152,8 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
         mToolBar = (Toolbar) findViewById(R.id.play_tb_bar);
         if (mToolBar != null){
             mToolBar.setNavigationIcon(R.mipmap.action_bar_back);
-            mToolBar.setTitle(QueryMusic.getMusicName(MusicCache.getCacheMusic(MusicCache.getPosition())));
-            mToolBar.setSubtitle(QueryMusic.getArtistName(MusicCache.getCacheMusic(MusicCache.getPosition())));
+            mToolBar.setTitle(OperateMusic.getMusicName(PlayListCache.getCacheMusic(PlayListCache.getPosition())));
+            mToolBar.setSubtitle(OperateMusic.getArtistName(PlayListCache.getCacheMusic(PlayListCache.getPosition())));
             setSupportActionBar(mToolBar);
             mToolBar.setNavigationOnClickListener(new View.OnClickListener() {
                 @Override
@@ -155,38 +167,40 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
     private void initViewPager(){
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter();
         mViewPager.setAdapter(viewPagerAdapter);
-        mViewPager.setCurrentItem(MusicCache.getPosition());
-        Log.d("test" ,MusicCache.getPosition()+"设置当前页面为" );
+        mViewPager.setCurrentItem(PlayListCache.getPosition()+1);
+        Log.d("test" , PlayListCache.getPosition()+"设置当前页面为" );
     }
 
     @Override
     public void onClick(View v) {
        switch (v.getId()){
            case R.id.play_iv_play :
-               if (QueryMusic.isPlaying()){
+               if (OperateMusic.isPlaying()){
                    mIvPlayOrPause.setImageResource(R.mipmap.play_bottom_play);
-                   QueryMusic.pause();
+                   OperateMusic.pause();
                    mSeekBar.removeCallbacks(mUpdateSeekBar);
                    mNeedleAnimator.reverse();
                }else {
                    mIvPlayOrPause.setImageResource(R.mipmap.play_bottom_pause);
-                   QueryMusic.start();
+                   OperateMusic.start();
                    mNeedleAnimator.start();
                    mSeekBar.postDelayed(mUpdateSeekBar , 1000);
                }
                EventBus.getDefault().post("null");
                break;
            case R.id.play_iv_next :
-//               QueryMusic.next();
-//               initInfo();
-//               EventBus.getDefault().post("null");
                changeToNext();
                break;
            case R.id.play_iv_pre :
-//               QueryMusic.pre();
-//               initInfo();
-//               EventBus.getDefault().post("null");
                changeToPre();
+               break;
+           case R.id.play_rl_lrc :
+               Log.d("test" , "我点击了歌词");
+               if (mLrcLayout.getVisibility() == View.VISIBLE) {
+                   mAlbumLayout.setVisibility(View.VISIBLE);
+                   mLrcLayout.setVisibility(View.INVISIBLE);
+                   mBottomBar.setVisibility(View.VISIBLE);
+               }
                break;
        }
     }
@@ -194,8 +208,8 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
     @Override
     public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
         if (fromUser){
-            QueryMusic.seekTo(progress);
-            mTvStartTime.setText(CalculateTime.calculateFormatTime(QueryMusic.position()));
+            OperateMusic.seekTo(progress);
+            mTvStartTime.setText(CalculateTime.calculateFormatTime(OperateMusic.position()));
         }
     }
 
@@ -214,18 +228,20 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
 
     @Override
     public void onPageSelected(int position) {
-//        if (position == mMusicList.size()+1){
-//            mViewPager.setCurrentItem(1);
-//            MusicCache.rememberPosition(0);
-//            changeToNext();
-//        }else if (position == 0){
-//            mViewPager.setCurrentItem(mMusicList.size());
-//            MusicCache.rememberPosition(mMusicList.size()-1);
-//            changeToPre();
-//        }else
-        if (position > MusicCache.getPosition()){//向右边滑动
+        if (position == 0){
+            OperateMusic.pre();
+            initInfo();
+            EventBus.getDefault().post("null");
+            mViewPager.setCurrentItem(mMusicList.size());
+        }else if (position == mMusicList.size() +1){
+            Log.d("test" , "尽头也为");
+            OperateMusic.next();
+            initInfo();
+            EventBus.getDefault().post("null");
+            mViewPager.setCurrentItem(1);
+        }else if (position > PlayListCache.getPosition()+1){//向右边滑动
             changeToNext();
-        }else if (position < MusicCache.getPosition()){
+        }else if (position < PlayListCache.getPosition()+1){
             changeToPre();
         }
     }
@@ -235,22 +251,13 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
 
     }
 
-    class ViewPagerAdapter extends PagerAdapter {
-
-//        public ViewPagerAdapter(FragmentManager fm) {
-//            super(fm);
-//        }
-
-//        @Override
-//        public Fragment getItem(int position) {
-//            AlbumRoundFragment albumRoundFragment = AlbumRoundFragment.newInstance("http://img4.imgtn.bdimg.com/it/u=1736222420,1255659206&fm=21&gp=0.jpg");
-//            return albumRoundFragment;
-//        }
+    class ViewPagerAdapter extends PagerAdapter implements View.OnClickListener ,VolleyHelper.VolleyListener{
 
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View view = LayoutInflater.from(PlayActivity.this).inflate(R.layout.fragmnet_play_round , container , false);
             ImageView imageView = (ImageView) view.findViewById(R.id.fragment_play_album);
+            imageView.setOnClickListener(this);
             imageView.setImageResource(R.mipmap.fragment_play_album_defautl);
             container.addView(view);
             return view;
@@ -264,33 +271,65 @@ public class PlayActivity extends BottomActivity implements View.OnClickListener
 
         @Override
         public int getCount() {
-            return mMusicList.size();
+            return mMusicList.size()+2;
         }
 
         @Override
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.fragment_play_album:
+                    tryToLoadLrc();
+                    break;
+            }
+        }
+
+        private void tryToLoadLrc(){
+            if (mAlbumLayout.getVisibility() == View.VISIBLE) {
+                mAlbumLayout.setVisibility(View.INVISIBLE);
+                mLrcLayout.setVisibility(View.VISIBLE);
+                mBottomBar.setVisibility(View.INVISIBLE);
+                int position = PlayListCache.getPosition() ;
+                MusicInfo musicInfo = PlayListCache.getCacheMusic(position);
+                String musicName = OperateMusic.getMusicName(musicInfo) ;
+                String artist = OperateMusic.getArtistName(musicInfo) ;
+                String lrcLink = MusicApi.Search.searchLrcPic( musicName, artist);
+                Log.d("test" , "这是歌词连接json数据"+lrcLink);
+                if (!mLvLrc.searchLrc(null , musicName)){
+                    VolleyHelper.sendByVolley(lrcLink , this);
+                }
+            }
+        }
+
+        @Override
+        public void onSucceed(String jsonString) {
+            Log.d("test" , jsonString);
+            String link = ParseResponse.parseLrcResponse(jsonString);
+            Log.d("test" , "这是歌词下载连接"+link);
+            mLvLrc.searchLrc(link , OperateMusic.getArtistName(PlayListCache.getCacheMusic(PlayListCache.getPosition())));
+        }
+
+        @Override
+        public void onFailed() {
+            Log.d("test" , "网络请求失败");
+        }
     }
 
     private void changeToNext(){
-        QueryMusic.next();
+        OperateMusic.next();
         initInfo();
         EventBus.getDefault().post("null");
-        mViewPager.setCurrentItem(MusicCache.getPosition());
+        mViewPager.setCurrentItem(PlayListCache.getPosition()+1);
     }
 
     private void changeToPre(){
-        QueryMusic.pre();
+        OperateMusic.pre();
         initInfo();
         EventBus.getDefault().post("null");
-        mViewPager.setCurrentItem(MusicCache.getPosition());
+        mViewPager.setCurrentItem(PlayListCache.getPosition()+1);
     }
-
-//    private void loadAlbumImage(String url ,ImageView imageView){
-//        Glide.with(this)
-//                .load(url)
-//                .placeholder(R.mipmap.fragment_play_album_defautl)
-//                .into(imageView);
-//    }
 }

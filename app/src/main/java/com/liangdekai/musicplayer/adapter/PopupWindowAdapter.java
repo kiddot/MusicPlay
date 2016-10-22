@@ -11,8 +11,8 @@ import android.widget.TextView;
 
 import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.bean.MusicInfo;
-import com.liangdekai.musicplayer.util.MusicCache;
-import com.liangdekai.musicplayer.util.QueryMusic;
+import com.liangdekai.musicplayer.util.OperateMusic;
+import com.liangdekai.musicplayer.util.PlayListCache;
 
 import java.util.List;
 
@@ -86,14 +86,16 @@ public class PopupWindowAdapter extends RecyclerView.Adapter<PopupWindowAdapter.
 
         @Override
         public void onClick(View v) {
-            QueryMusic.playMusic(mPlayList.get(getAdapterPosition()-1).getData());
-            playState.setImageResource(R.mipmap.common_play_state);
-            playState.setVisibility(View.VISIBLE);
-            musicName.setTextColor(Color.parseColor("#d20000"));
-            artistName.setTextColor(Color.parseColor("#d20000"));
-            MusicCache.addCacheMusic(mPlayList);
-            MusicCache.rememberPosition(getAdapterPosition() -1);
-            EventBus.getDefault().post("null");
+            if (getAdapterPosition() != 0){
+                OperateMusic.playMusic(mPlayList.get(getAdapterPosition()-1).getData());
+                playState.setImageResource(R.mipmap.common_play_state);
+                playState.setVisibility(View.VISIBLE);
+                musicName.setTextColor(Color.parseColor("#d20000"));
+                artistName.setTextColor(Color.parseColor("#d20000"));
+                PlayListCache.addCacheMusic(mPlayList);
+                PlayListCache.rememberPosition(getAdapterPosition() -1);
+                EventBus.getDefault().post("null");
+            }
         }
     }
 
@@ -102,7 +104,7 @@ public class PopupWindowAdapter extends RecyclerView.Adapter<PopupWindowAdapter.
 //        mListener = new OnClickListener() {
 //            @Override
 //            public void onClick(MusicHolder musicHolder, int position) {
-//                QueryMusic.playMusic(mPlayList.get(position).getData());
+//                OperateMusic.playMusic(mPlayList.get(position).getData());
 //                musicHolder.playState.setImageResource(R.mipmap.common_play_state);
 //            }
 //        };

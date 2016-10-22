@@ -2,8 +2,9 @@ package com.liangdekai.musicplayer.net.util;
 
 import android.util.Log;
 
-import com.liangdekai.lrcview.net.bean.LrcInfo;
-import com.liangdekai.lrcview.net.bean.LrcLine;
+
+import com.liangdekai.musicplayer.net.bean.LrcInfo;
+import com.liangdekai.musicplayer.net.bean.LrcLine;
 
 import java.io.BufferedReader;
 import java.io.File;

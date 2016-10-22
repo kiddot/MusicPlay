@@ -21,17 +21,20 @@ public class FileDownLoad {
 
     public void startDown(String url , File file){
         HttpUtils httpUtils = new HttpUtils();
-        httpUtils.download(url, file.getAbsolutePath(), true, true, new RequestCallBack<File>() {
-            @Override
-            public void onSuccess(ResponseInfo<File> responseInfo) {
-                mCallBack.callBack(responseInfo.result , "GBK");
-            }
+        if (url != null){
+            httpUtils.download(url, file.getAbsolutePath(), true, true, new RequestCallBack<File>() {
+                @Override
+                public void onSuccess(ResponseInfo<File> responseInfo) {
+                    mCallBack.callBack(responseInfo.result , "UTF-8");
+                }
 
-            @Override
-            public void onFailure(HttpException e, String s) {
-                Log.d("test" , "下载失败 " + s);
-            }
-        });
+                @Override
+                public void onFailure(HttpException e, String s) {
+                    mCallBack.callBack(null , "");
+                    Log.d("test" , "下载失败 " + s);
+                }
+            });
+        }
     }
 
     public interface DownLoadedCallBack{

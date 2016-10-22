@@ -69,6 +69,7 @@ public class MainActivity extends BottomActivity implements ViewPager.OnPageChan
         mIvDiscover = (ImageView) findViewById(R.id.main_iv_discover);
         mIvMusic = (ImageView) findViewById(R.id.main_iv_music);
         mIvFriend = (ImageView) findViewById(R.id.main_iv_friends);
+        mIvSearch = (ImageView) findViewById(R.id.main_iv_search);
         mFragment = new ArrayList<>();
         mMenuItem = new ArrayList<>();
     }
@@ -109,6 +110,7 @@ public class MainActivity extends BottomActivity implements ViewPager.OnPageChan
         mIvFriend.setOnClickListener(this);
         mIvDiscover.setOnClickListener(this);
         mIvMusic.setOnClickListener(this);
+        mIvSearch.setOnClickListener(this);
     }
 
     private void setToolBar() {
@@ -141,11 +143,9 @@ public class MainActivity extends BottomActivity implements ViewPager.OnPageChan
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         if (item.getItemId() == R.id.home){
-            Log.d("test" , "click icon");
             mDrawerLayout.openDrawer(GravityCompat.START);
             return true;
         }
-        Log.d("test" , "click icon");
         return super.onOptionsItemSelected(item);
     }
 
@@ -180,6 +180,9 @@ public class MainActivity extends BottomActivity implements ViewPager.OnPageChan
                 break;
             case R.id.main_iv_friends :
                 mViewPager.setCurrentItem(2);
+                break;
+            case R.id.main_iv_search :
+                SearchActivity.startActivity(this);
                 break;
         }
     }

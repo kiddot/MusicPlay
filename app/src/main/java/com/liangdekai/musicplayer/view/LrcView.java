@@ -14,10 +14,10 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.Scroller;
 
-import com.liangdekai.lrcview.net.bean.LrcInfo;
-import com.liangdekai.lrcview.net.bean.LrcLine;
-import com.liangdekai.lrcview.net.download.FileDownLoad;
-import com.liangdekai.lrcview.util.ParseLrc;
+import com.liangdekai.musicplayer.net.bean.LrcInfo;
+import com.liangdekai.musicplayer.net.bean.LrcLine;
+import com.liangdekai.musicplayer.net.download.FileDownLoad;
+import com.liangdekai.musicplayer.net.util.ParseLrc;
 
 import java.io.File;
 
@@ -41,6 +41,7 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
     private float mFirst = getMeasuredWidth() / 2;
     private float mMove = 0;
     private float mShaderWidth = 300;  // 渐变过渡的距离
+    private String mLrcHint = "努力搜索歌词....." ;
     private Scroller mScroller ;
     private FileDownLoad mFileDownLoad ;
     private VelocityTracker mVelocityTracker ;
@@ -51,19 +52,16 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
     public LrcView(Context context) {
         super(context);
         init(context);
-        searchLrc();
     }
 
     public LrcView(Context context, AttributeSet attrs) {
         super(context, attrs);
         init(context);
-        searchLrc();
     }
 
     public LrcView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(context);
-        searchLrc();
     }
 
     private void init(Context context){
@@ -71,7 +69,7 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
         mOtherPaint.setDither(true);
         mOtherPaint.setAntiAlias(true);
         mOtherPaint.setTextSize(mOtherTextSize);
-        mOtherPaint.setColor(Color.parseColor("#000000"));
+        mOtherPaint.setColor(Color.parseColor("#ccffff"));
         mOtherPaint.setTextAlign(Paint.Align.CENTER);
 
         mCurrentPaint = new Paint();
@@ -87,16 +85,19 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
         measureLineHeight();
     }
 
-    private void searchLrc(){
-        File file = new File(PATH + "童话.lrc");
+    public boolean searchLrc(String url , String musicName){
+        File file = new File(PATH +musicName +".lrc");
         if (file.exists()){
             Log.d("test", "文件存在");
-            mLrcInfo = ParseLrc.getLrc(file , "GBK");
-            //Log.d("test", lrcInfo.lrcLines.size()+"行数为");
+            mLrcInfo = ParseLrc.getLrc(file , "UTF-8");
+            Log.d("test" , "mLrcInfo"+mLrcInfo.lrcLines.size());
+            invalidate();
+            return true ;
         }else {
-            mFileDownLoad.startDown("http://file.bmob.cn/M03/46/32/oYYBAFcfB4WAeGIUAAAFi6PSZkQ438.lrc" , file);
+            mFileDownLoad.startDown(url , file);
             Log.d("test", "文件no存在");
-        }//http://file.bmob.cn/M03/46/32/oYYBAFcfB4WAeGIUAAAFi6PSZkQ438.lrc
+            return false ;
+        }
     }
 
     @Override
@@ -107,6 +108,10 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (mLrcInfo == null){
+            canvas.drawText(mLrcHint, getMeasuredWidth() / 2, getMeasuredHeight() / 2 , mOtherPaint);
+            return;
+        }
         mLastPosition = mLrcInfo.lrcLines.size() * mLineHeight ;
         for (int i = 0 ; i < mLrcInfo.lrcLines.size() ; i ++){
             float x = getMeasuredWidth() / 2;
@@ -137,8 +142,9 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
 
     public void scrollY(){
         //smoothScrollBy(0 , mLineHeight);
-        smoothScrollTo(0 , mLineHeight * ++mCurrentLine);
+        smoothScrollTo(0 , mLineHeight * mCurrentLine);
         mOffsetY = mLineHeight * mCurrentLine ;
+        mCurrentLine++;
     }
 
     @Override
@@ -155,6 +161,9 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
                 actionMove(event);
                 break;
             case MotionEvent.ACTION_UP:
+                actionUp(event);
+                break;
+            case MotionEvent.ACTION_CANCEL:
                 actionUp(event);
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -217,15 +226,17 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
      * 根据当前时间滑动到指定位置
      * @param time  时间
      * */
-    private void scrollToCurrentTimeMillis(long time) {
-        for(int i = mCurrentLine ; i < mLrcInfo.lrcLines.size(); i ++) {
-            LrcLine lrcLine = mLrcInfo.lrcLines.get(i);
-            if(i == mLrcInfo.lrcLines.size() - 1) {
-                break;
-            }
-            if(lrcLine != null && lrcLine.getStartTime() < time) {
-                scrollY();
-                break;
+    public void scrollToCurrentTimeMillis(long time) {
+        if (mLrcInfo != null){
+            for(int i = mCurrentLine ; i < mLrcInfo.lrcLines.size(); i ++) {
+                if(i == mLrcInfo.lrcLines.size() - 2) {
+                    break;
+                }
+                LrcLine lrcStartLine = mLrcInfo.lrcLines.get(i+1);
+                if(lrcStartLine != null && lrcStartLine.getStartTime() < time ) {
+                    scrollY();
+                    break;
+                }
             }
         }
     }
@@ -238,7 +249,12 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
 
     @Override
     public void callBack(File file, String format) {
-
+        if (file == null){
+            mLrcHint = "暂无歌词" ;
+        }else {
+            mLrcInfo = ParseLrc.getLrc(file , format);
+        }
+        invalidate();
     }
 
     private void smoothScrollBy(int dstX, int dstY) {
@@ -260,4 +276,5 @@ public class LrcView extends View implements FileDownLoad.DownLoadedCallBack {
             postInvalidate();
         }
     }
+
 }

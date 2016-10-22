@@ -1,6 +1,103 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <!--<android.support.v7.widget.Toolbar-->
+        <!--android:id="@+id/activity_search_toolbar"-->
+        <!--android:fitsSystemWindows="true"-->
+        <!--android:clipToPadding="true"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:background="?attr/colorPrimary"-->
+        <!--android:minHeight="?attr/actionBarSize"-->
+        <!--app:contentInsetStart="0.0dp"-->
+        <!--app:theme="@style/ToolbarStyle"/>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="65dp"
+        android:background="?attr/colorPrimary"
+        android:fitsSystemWindows="true"
+        >
+
+        <ImageView
+            android:id="@+id/search_iv_back"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@mipmap/action_bar_back"
+            android:padding="16dp"/>
+
+        <SearchView
+            android:id="@+id/search_et_input"
+            android:layout_width="320dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="5dp"
+            />
+
+        <ImageView
+            android:id="@+id/search_iv_search_icon"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@mipmap/actionbar_search"
+            android:layout_alignParentEnd="true"
+            android:padding="16dp"
+            />
+
+    </RelativeLayout>
+
+    <com.liangdekai.musicplayer.view.FlowLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="10dp">
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="Welcome"
+            android:textColor="#43BBE7" />
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="IT工程师"
+            android:textColor="#43BBE7" />
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="学习ing"
+            android:textColor="#43BBE7" />
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="恋爱ing"
+            android:textColor="#43BBE7" />
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="挣钱ing"
+            android:textColor="#43BBE7" />
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="努力ing"
+            android:textColor="#43BBE7" />
+
+        <TextView
+            style="@style/hot_word"
+            android:background="@drawable/hot_word"
+            android:text="I thick i can"
+            android:textColor="#43BBE7" />
+
+    </com.liangdekai.musicplayer.view.FlowLayout>
 
 </LinearLayout>

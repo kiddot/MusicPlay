@@ -7,24 +7,17 @@ import android.os.Binder;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.liangdekai.musicplayer.IMusicAidlInterface;
 import com.liangdekai.musicplayer.bean.MusicInfo;
-import com.liangdekai.musicplayer.util.MusicCache;
-import com.liangdekai.musicplayer.util.MusicHelper;
 
 import java.io.IOException;
 
 public class PlayService extends Service{
-    private static final String CURRENT_POSITION = "current";
     private static final String MUSIC_INFO = "musicInfo";
     private MediaPlayer mMediaPlayer ;
     private Binder mBinder ;
     private MusicInfo mMusicInfo;
-    private String mMusicName ;
-    private String mArtistName;
-    private int mDuration;
 
     @Override
     public void onCreate() {
@@ -38,13 +31,13 @@ public class PlayService extends Service{
         mMusicInfo = intent.getParcelableExtra(MUSIC_INFO);
 //        int currentPosition = intent.getIntExtra(CURRENT_POSITION, -1);
 //        if (currentPosition == -1){
-//            currentPosition = MusicCache.getPosition();
+//            currentPosition = PlayListCache.getPosition();
 //        }else{
-//            MusicCache.rememberPosition(currentPosition);
+//            PlayListCache.rememberPosition(currentPosition);
 //        }
-//        Log.d("test" , currentPosition +"当前播放位置" +"，实际位置"+MusicCache.getPosition());
+//        Log.d("test" , currentPosition +"当前播放位置" +"，实际位置"+PlayListCache.getPosition());
         if (mMusicInfo != null){
-            //MusicCache.addCacheMusic(MusicHelper.queryMusic(this));
+            //PlayListCache.addCacheMusic(MusicHelper.queryMusic(this));
             if (mMusicInfo.getData() != null){
                 playMusic(mMusicInfo.getData());
             }
@@ -68,23 +61,23 @@ public class PlayService extends Service{
     }
 
     private void next(MusicInfo musicInfo){
-//        if (MusicCache.getPosition() == MusicCache.getMusicSize()-1){
-//            MusicCache.rememberPosition(0);
-//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//        if (PlayListCache.getPosition() == PlayListCache.getMusicSize()-1){
+//            PlayListCache.rememberPosition(0);
+//            playMusic(PlayListCache.getCacheMusic(PlayListCache.getPosition()).getData());
 //        }else{
-//            MusicCache.rememberPosition(MusicCache.getPosition()+1);
-//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//            PlayListCache.rememberPosition(PlayListCache.getPosition()+1);
+//            playMusic(PlayListCache.getCacheMusic(PlayListCache.getPosition()).getData());
 //        }
         playMusic(musicInfo.getData());
     }
 
     private void pre(MusicInfo musicInfo){
-//        if (MusicCache.getPosition() == 0){
-//            MusicCache.rememberPosition(MusicCache.getMusicSize()-1);
-//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//        if (PlayListCache.getPosition() == 0){
+//            PlayListCache.rememberPosition(PlayListCache.getMusicSize()-1);
+//            playMusic(PlayListCache.getCacheMusic(PlayListCache.getPosition()).getData());
 //        }else{
-//            MusicCache.rememberPosition(MusicCache.getPosition()-1);
-//            playMusic(MusicCache.getCacheMusic(MusicCache.getPosition()).getData());
+//            PlayListCache.rememberPosition(PlayListCache.getPosition()-1);
+//            playMusic(PlayListCache.getCacheMusic(PlayListCache.getPosition()).getData());
 //        }
         playMusic(musicInfo.getData());
     }

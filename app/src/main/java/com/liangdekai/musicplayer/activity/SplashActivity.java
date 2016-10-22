@@ -3,8 +3,10 @@ package com.liangdekai.musicplayer.activity;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 
 import com.liangdekai.musicplayer.R;
+import com.liangdekai.musicplayer.net.MusicApi;
 
 /**
  * Created by asus on 2016/9/5.

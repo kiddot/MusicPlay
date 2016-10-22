@@ -48,5 +48,12 @@
         <item name="android:textColor">@color/menu_item_white</item>
     </style>
 
+    <style name="hot_word">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">4dp</item>
+        <item name="android:textColor">#ffffff</item>
+        <item name="android:background">@drawable/hot_word</item>
+    </style>
 
 </resources>

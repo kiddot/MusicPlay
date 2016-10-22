@@ -50,6 +50,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/bottom_fl_control"
         android:layout_below="@+id/activity_local_bar">
 
         <include layout="@layout/fragment_common" />
@@ -62,9 +63,6 @@
         android:layout_width="match_parent"
         android:layout_height="50dp">
 
-        <!--<include-->
-        <!--android:id="@+id/main_bottom_bar"-->
-        <!--layout="@layout/bottom_control_music"/>-->
     </FrameLayout>
 
 

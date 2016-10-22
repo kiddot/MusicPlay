@@ -9,7 +9,6 @@ import android.widget.TextView;
 
 import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.bean.MusicInfo;
-import com.liangdekai.musicplayer.util.MusicCache;
 
 import java.util.List;
 
@@ -20,7 +19,7 @@ public class SingleSongAdapter extends RecyclerView.Adapter<SingleSongAdapter.So
 
     public SingleSongAdapter(List<MusicInfo> list){
         mMusicList = list ;
-        //MusicCache.addCacheMusic(mMusicList);
+        //PlayListCache.addCacheMusic(mMusicList);
     }
 
     @Override

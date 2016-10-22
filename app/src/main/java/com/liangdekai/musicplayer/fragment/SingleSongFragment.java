@@ -5,24 +5,19 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.liangdekai.musicplayer.R;
 import com.liangdekai.musicplayer.adapter.SingleSongAdapter;
 import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.service.PlayService;
 import com.liangdekai.musicplayer.util.DividerItemDecoration;
-import com.liangdekai.musicplayer.util.MusicAction;
-import com.liangdekai.musicplayer.util.MusicCache;
+import com.liangdekai.musicplayer.util.PlayListCache;
 import com.liangdekai.musicplayer.util.MusicHelper;
 
 import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
-import de.greenrobot.event.ThreadMode;
 
 public class SingleSongFragment extends BaseLazyFragment {
     private static final String CURRENT_POSITION = "current";
@@ -79,8 +74,8 @@ public class SingleSongFragment extends BaseLazyFragment {
                         //intent.putExtra(MUSIC_URL , musicInfo.getData());
                         intent.putExtra(CURRENT_POSITION , position);
                         intent.putExtras(bundle);
-                        MusicCache.rememberPosition(position);
-                        MusicCache.addCacheMusic(MusicHelper.queryMusic(getActivity()));
+                        PlayListCache.rememberPosition(position);
+                        PlayListCache.addCacheMusic(MusicHelper.queryMusic(getActivity()));
                         getActivity().startService(intent);
                         EventBus.getDefault().post(musicInfo);
 //                        Intent sendBroadcast = new Intent(MusicAction.MUSIC_PLAY);

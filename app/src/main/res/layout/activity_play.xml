@@ -87,8 +87,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:visibility="invisible"
-            app:layout_heightPercent="70%"
-            android:layout_marginTop="?attr/actionBarSize">
+            app:layout_heightPercent="60%"
+            android:layout_below="@+id/play_tb_bar"
+            >
+
+            <com.liangdekai.musicplayer.view.LrcView
+                android:id="@+id/play_lv_lrc"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </RelativeLayout>
 

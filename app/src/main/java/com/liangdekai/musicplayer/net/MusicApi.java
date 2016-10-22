@@ -3,6 +3,8 @@ package com.liangdekai.musicplayer.net;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import api.AESTools;
+
 public class MusicApi {
 
     public static final String FORMATE = "json";

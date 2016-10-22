@@ -62,17 +62,8 @@ public class LocalMusicActivity extends BottomActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_loacl_music);
         init();
-        //initView();
         setToolBar();
     }
-
-//    private void initView(){
-//        View view = mBottomFragment.getBottomView();
-//        mSong = (TextView) view.findViewById(R.id.main_bottom_song);
-//        mArtist = (TextView) view.findViewById(R.id.main_bottom_artist);
-//        mPlay = (ImageView) view.findViewById(R.id.main_bottom_play);
-//        mNext = (ImageView) view.findViewById(R.id.main_bottom_next);
-//    }
 
     private void init(){
         mTitle = new String[]{"单曲" ,"歌手" ,"专辑" ,"文件夹"};
@@ -90,8 +81,6 @@ public class LocalMusicActivity extends BottomActivity {
         mTabLayout = (TabLayout) findViewById(R.id.fragment_discover_tab) ;
         mViewPager.setAdapter(mAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
-        //mMusicList = MusicHelper.queryMusic(this);
-        //bindService();
     }
 
     private void setToolBar() {
@@ -109,41 +98,8 @@ public class LocalMusicActivity extends BottomActivity {
         }
     }
 
-//    @Subscribe(threadMode = ThreadMode.MainThread)
-//    public void TestEventBus(MusicInfo musicInfo){
-//        Log.d("test" , musicInfo.getMusicName()+"here");
-////        mSong.setText(musicInfo.getMusicName());
-////        mArtist.setText(musicInfo.getArtist());
-////        mPlay.setImageResource(R.mipmap.main_bottom_pause);
-////        Intent intent = new Intent(this , PlayService.class);
-////        bindService(intent , mConnection , BIND_AUTO_CREATE);
-//        mBottomFragment.bindService();
-//        mBottomFragment.upDateInfo(musicInfo);
-//    }
-
-//    public void bindService(){
-//        Intent intent = new Intent(this , PlayService.class);
-//        bindService(intent , mConnection , BIND_AUTO_CREATE);
-//        mConnection = new ServiceConnection() {
-//            @Override
-//            public void onServiceConnected(ComponentName name, IBinder service) {
-//                Log.d("test" , "服务已经绑定");
-//                PlayService.MyBind binder = (PlayService.MyBind) service;
-//                mIsPlaying = binder.isPlaying();
-//                mCurrentPosition = binder.getPosition();
-//            }
-//
-//            @Override
-//            public void onServiceDisconnected(ComponentName name) {
-//                Log.d("test" , "服务已经解除绑定");
-//            }
-//        };
-//    }
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        //unbindService(mConnection);
-        //mBottomFragment.unBindService();
     }
 }

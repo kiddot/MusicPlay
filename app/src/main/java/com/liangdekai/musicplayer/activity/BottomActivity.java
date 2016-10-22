@@ -4,16 +4,10 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 
 import com.liangdekai.musicplayer.R;
-import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.fragment.BottomControl;
-import com.liangdekai.musicplayer.util.QueryMusic;
-
-import de.greenrobot.event.EventBus;
-import de.greenrobot.event.Subscribe;
-import de.greenrobot.event.ThreadMode;
+import com.liangdekai.musicplayer.util.OperateMusic;
 
 public class BottomActivity extends AppCompatActivity {
     protected BottomControl mBottomFragment;
@@ -21,7 +15,7 @@ public class BottomActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        QueryMusic.bindToService(this);
+        OperateMusic.bindToService(this);
         showQuickControl(true);
     }
 
