@@ -1,6 +1,5 @@
-package com.liangdekai.musicplayer.util;
+package com.liangdekai.musicplayer.manager;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.liangdekai.musicplayer.bean.MusicInfo;
@@ -9,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by asus on 2016/10/13.
+ * 缓存歌曲的播放位置以及对象
  */
 public class PlayListCache {
     public static SparseArray<MusicInfo> mCacheMusic = new SparseArray<>();

@@ -1,4 +1,4 @@
-package com.liangdekai.musicplayer.util;
+package com.liangdekai.musicplayer.manager;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -11,11 +11,19 @@ import android.util.Log;
 import com.liangdekai.musicplayer.IMusicAidlInterface;
 import com.liangdekai.musicplayer.bean.MusicInfo;
 import com.liangdekai.musicplayer.service.PlayService;
+import com.liangdekai.musicplayer.util.PlayListCache;
 
+/**
+ * 对外提供方法对音乐进行各种操作以及获取当前正在播放音乐的相关信息
+ */
 public class OperateMusic {
     public static IMusicAidlInterface mQuery ;
     public static BinderConnection mConnection;
 
+    /**
+     * 绑定远程服务
+     * @param context
+     */
     public static void bindToService(Context context){
         Intent intent = new Intent(context , PlayService.class);
         context.startService(intent);
